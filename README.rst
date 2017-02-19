@@ -1,8 +1,3 @@
-========
-shortbus
-========
-
-
 .. image:: https://img.shields.io/pypi/v/shortbus.svg
         :target: https://pypi.python.org/pypi/shortbus
 
@@ -17,6 +12,9 @@ shortbus
      :target: https://pyup.io/repos/github/brmc/shortbus/
      :alt: Updates
 
+========
+shortbus
+========
 
 Tools to convert Sublime Text snippets into Jetbrains live templates and vice versa
 
@@ -24,17 +22,31 @@ Tools to convert Sublime Text snippets into Jetbrains live templates and vice ve
 * Free software: MIT license
 * Documentation: https://shortbus.readthedocs.io.
 
+Requirements:
+-------------
 
-Features
---------
+- python3.6+
+- lxml
+- pyyaml
 
-* TODO
+Quick Start
+-----------
 
-Credits
--------
+Install library:
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+.. code-block:: console
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+    $ pip install shortbus
+
+Do stuff:
+
+.. code-block:: python
+
+    transpilers.import_from_yml('./my.yml')
+        .import_from_sublimetext('~/path/to/sublimetext/snippetdir/)
+        .import_from_jetbrains('~/.PyCharm2016.3/config/liveTemplates/Djaneiro.xml')
+        .export_to_jetbrains('shortbus.xml')
+        .export_to_yml('shortbus.yml')
+
+.. include:: ./docs/ymlsyntax.rst
 
