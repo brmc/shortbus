@@ -20,7 +20,15 @@ Tools to convert Sublime Text snippets into Jetbrains live templates and vice ve
 
 
 * Free software: MIT license
-* Documentation: https://shortbus.readthedocs.io.
+* Documentation: something is wrong with the read-the-docs build, so for those in a *nix environment, to view the documentation do this:
+
+.. code-block:: console
+
+    $ git clone https://github.com/brmc/shortbus
+    $ cd shortbus
+    $ make docs
+
+a browser should open with the docs
 
 Requirements:
 -------------
