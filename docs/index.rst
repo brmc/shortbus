@@ -1,5 +1,5 @@
-Welcome to shortbus's documentation!
-======================================
+shortbus documentation
+======================
 
 Contents:
 
@@ -16,5 +16,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
