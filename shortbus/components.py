@@ -6,6 +6,8 @@ from collections import OrderedDict, Callable
 from functools import wraps
 from xml import etree
 
+from shortbus.constants import CONTEXT
+
 
 def warn_if_missing_templates(func):
     @wraps(func)
@@ -22,8 +24,10 @@ def warn_if_missing_templates(func):
 
 
 class ContextDefinition(object):
-    def __init__(self, name: str='Python', value: bool=True):
-        self.name: str = name
+    default_name = CONTEXT.python.all
+
+    def __init__(self, name: str = '', value: bool = True):
+        self.name: str = name if name is not '' else self.default_name
         self.value: bool = value
 
     def __eq__(self, other):
@@ -37,8 +41,8 @@ class ContextDefinition(object):
 
 
 class VariableDefinition(object):
-    def __init__(self, name: str, defaultValue: str='', expression: str='',
-                 alwaysStopAt: bool=True):
+    def __init__(self, name: str, defaultValue: str = '', expression: str = '',
+                 alwaysStopAt: bool = True):
         self.name: str = name
         self.defaultValue: str = defaultValue.strip('"\'')
         self.expression: str = expression
@@ -250,10 +254,12 @@ class TemplateDefinition(object):
 
 
 def parse_and_extract_variables(string: str, regex: str, variables=None):
-    pattern: re._pattern_type= re.compile(regex)
-    string:str = string.replace("$:$", "$$")
-    format_variable: Callable= TemplateDefinition.variable_prefix.format
-    wrap_variable: Callable= TemplateDefinition.VARIABLE_WRAPPER.format
+    pattern: re._pattern_type = re.compile(regex)
+    string: str = string.replace("$:$", "$$")
+
+    format_variable = TemplateDefinition.variable_prefix.format
+
+    wrap_variable: Callable = TemplateDefinition.VARIABLE_WRAPPER.format
 
     matches = pattern.findall(string)
     variables = variables or OrderedDict()

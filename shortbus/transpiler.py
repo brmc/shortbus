@@ -16,7 +16,7 @@ except ImportError:
 
 
 class Transpiler(object):
-    def __init__(self, name: str="Template Group"):
+    def __init__(self, name: str = "Template Group"):
         self.name = name
         self.templates = {}
 
@@ -36,7 +36,7 @@ class Transpiler(object):
 
         if data is None:
             warnings.warn('YML File is empty or has invalid data:'
-                          + path +'. Skipping')
+                          + path + '. Skipping')
             return
 
         templates = [TemplateDefinition.build_from_yml(x) for x in data]
@@ -92,7 +92,7 @@ class Transpiler(object):
 
         return self
 
-    #@warn_if_missing_templates
+    # @warn_if_missing_templates
     def export_to_jetbrains(self, output_path: str) -> 'Transpiler':
         template_set = ElementTree.Element('templateSet')
         template_set.attrib['group'] = self.name
