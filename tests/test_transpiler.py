@@ -6,7 +6,9 @@ from unittest import TestCase
 from xml.etree import ElementTree
 
 from shortbus import Transpiler
-from shortbus.components import VariableDefinition, TemplateDefinition
+from shortbus.components import VariableDefinition, TemplateDefinition, \
+    ContextDefinition
+from shortbus.constants import CONTEXT
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper, dump
@@ -26,7 +28,7 @@ class GeneratorTest(TestCase):
 
         self.data_dir = os.path.join(self.directory, 'data')
 
-        self.generator = Transpiler('Djaneiro: Models')\
+        self.generator = Transpiler('Djaneiro: Models') \
             .import_from_yml(self.valid_yml_path)
 
         self.yml_templates = Transpiler().import_from_yml(
@@ -83,9 +85,9 @@ class GeneratorTest(TestCase):
         self.assertEqual(variables['VAR4'].defaultValue, 'ni')
         self.assertEqual(variables['ni'].defaultValue, '')
 
-        self.assertEqual(template.value, '$weep$ $graa$ $weep$ $VAR4$ $ni$ $VAR6$')
+        self.assertEqual(template.value,
+                         '$weep$ $graa$ $weep$ $VAR4$ $ni$ $VAR6$')
         self.assertEqual(len(variables), 5)
-
 
     def test_variable_typo_throws_warning(self):
         with self.assertWarns(Warning):
@@ -132,8 +134,10 @@ class GeneratorTest(TestCase):
         b = ElementTree.parse(self.jetbrains_xml).getroot()
 
         self.assertEqual(a.tag, b.tag)
-        template_a, template_b = a.findall('template')[0], b.findall('template')[0]
-        self.assertEqual(sorted(template_a.items()) , sorted(template_b.items()))
+        template_a, template_b = a.findall('template')[0], \
+                                 b.findall('template')[0]
+        self.assertEqual(sorted(template_a.items()),
+                         sorted(template_b.items()))
 
         variables_a = template_a.findall('variable')
         variables_b = template_b.findall('variable')
@@ -160,4 +164,21 @@ class GeneratorTest(TestCase):
         jetbrains = a.import_from_jetbrains(path)
 
         self.assertEqual(jetbrains, sublime)
+
+    def test_custom_transpiler(self):
+        class CppContext(ContextDefinition):
+            default_name = CONTEXT.cpp.all
+
+        class CppTemplate(TemplateDefinition):
+            default_context_cls = CppContext
+
+        class CppTranspiler(Transpiler):
+            template_cls = CppTemplate
+
+        transpiler = CppTranspiler('cpp')
+
+        path = os.path.join(self.data_dir, 'cpp.yml')
+        transpiler.import_from_yml(path)
+        result = transpiler.templates['bah'].context_options[0]
+        self.assertEqual(result.name, 'cpp')
 

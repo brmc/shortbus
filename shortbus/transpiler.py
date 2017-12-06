@@ -16,6 +16,8 @@ except ImportError:
 
 
 class Transpiler(object):
+    template_cls = TemplateDefinition
+
     def __init__(self, name: str = "Template Group"):
         self.name = name
         self.templates = {}
@@ -39,7 +41,7 @@ class Transpiler(object):
                           + path + '. Skipping')
             return
 
-        templates = [TemplateDefinition.build_from_yml(x) for x in data]
+        templates = [self.template_cls.build_from_yml(x) for x in data]
 
         templates.sort(key=lambda x: x.name.lower())
 
@@ -65,7 +67,7 @@ class Transpiler(object):
 
         xml = [ElementTree.parse(file).getroot() for file in files]
 
-        templates = [TemplateDefinition.build_from_snippet(child)
+        templates = [self.template_cls.build_from_snippet(child)
                      for child in xml]
 
         templates.sort(key=lambda x: x.name.lower())
@@ -83,7 +85,7 @@ class Transpiler(object):
         xml = ElementTree.parse(file_path).getroot()
         self.name = xml.attrib['group']
 
-        templates = [TemplateDefinition.build_from_xml(child)
+        templates = [self.template_cls.build_from_xml(child)
                      for child in xml]
         templates.sort(key=lambda x: x.name.lower())
         templates = {template.name: template for template in templates}
