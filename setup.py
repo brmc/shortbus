@@ -18,7 +18,7 @@ test_requirements = []
 
 setup(
     name='shortbus',
-    version='0.1.0',
+    version='0.2.0',
     description="Tools to convert Sublime Text snippets into Jetbrains live templates and vice versa",
     long_description=readme + '\n\n' + history,
     author="Brian McClure",
