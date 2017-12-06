@@ -12,6 +12,14 @@ shortbus.components module
     :undoc-members:
     :show-inheritance:
 
+shortbus.constants module
+-------------------------
+
+.. automodule:: shortbus.constants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 shortbus.transpiler module
 --------------------------
 

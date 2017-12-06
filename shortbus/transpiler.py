@@ -4,7 +4,10 @@ import glob
 import os
 import warnings
 
-from lxml import etree as ElementTree
+try:
+    from lxml import etree as ElementTree
+except:
+    pass
 from yaml import load, dump
 
 from shortbus.components import warn_if_missing_templates, TemplateDefinition

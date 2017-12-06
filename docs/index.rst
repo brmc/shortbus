@@ -5,3 +5,4 @@ shortbus documentation
 .. include:: installation.rst
 .. include:: usage.rst
 .. include:: ymlsyntax.rst
+.. include:: custom.rst
