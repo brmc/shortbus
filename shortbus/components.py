@@ -72,6 +72,7 @@ class TemplateDefinition(object):
     SUBLIME_CONTENT_REGEX = r'\<\!\[CDATA\[(.*)\]\]'
     SUBLIME_VARIABLE_REGEX = r'(?P<raw>\$\{?(?P<variable>\d):?' \
                              r'(?P<default>[\w_\s]*)\}?)'
+    default_context_cls = ContextDefinition
 
     def __init__(
             self,
@@ -93,7 +94,7 @@ class TemplateDefinition(object):
         self.toShortenFQNames = toShortenFQNames
 
         self.variables = variables or {}
-        self.context_options = context_options or [ContextDefinition()]
+        self.context_options = context_options or [self.default_context_cls()]
 
     def __eq__(self, other):
         equals = [
@@ -141,8 +142,8 @@ class TemplateDefinition(object):
             'description': self.description
         }
 
-    @staticmethod
-    def build_from_yml(yml: {}):
+    @classmethod
+    def build_from_yml(cls, yml: {}):
         """
         :param yml:
         :return:
@@ -169,7 +170,7 @@ class TemplateDefinition(object):
                 raise FileNotFoundError(f'Aint no file. get out: {path}')
 
         context = yml.pop('context', [{}])
-        context_options = [ContextDefinition(**x) for x in context]
+        context_options = [cls.default_context_cls(**x) for x in context]
 
         value, variables = parse_and_extract_variables(
             value, TemplateDefinition.VARIABLE_REGEX)
@@ -192,8 +193,8 @@ class TemplateDefinition(object):
             variables=variables,
             **yml)
 
-    @staticmethod
-    def build_from_xml(xml: {}):
+    @classmethod
+    def build_from_xml(cls, xml: {}):
         attrs = xml.attrib
         name = attrs['name']
         raw_vars = xml.findall('variable')
@@ -221,7 +222,8 @@ class TemplateDefinition(object):
             value = option.attrib['value'].lower()
             value = boolean_converter[value]
 
-            options.append(ContextDefinition(name=option_name, value=value))
+            options.append(
+                cls.default_context_cls(name=option_name, value=value))
 
         return TemplateDefinition(
             name,
@@ -232,8 +234,8 @@ class TemplateDefinition(object):
             context_options=options
         )
 
-    @staticmethod
-    def build_from_snippet(xml: etree):
+    @classmethod
+    def build_from_snippet(cls, xml: etree):
         name = xml.findtext('tabTrigger')
         content = xml.findtext('content')
 
@@ -241,7 +243,7 @@ class TemplateDefinition(object):
             content, TemplateDefinition.SUBLIME_VARIABLE_REGEX)
 
         scope = xml.findtext('scope')
-        context = ContextDefinition(scope.split('.')[-1].capitalize())
+        context = cls.default_context_cls(scope.split('.')[-1].capitalize())
 
         description = xml.findtext('description')
 
