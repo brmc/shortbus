@@ -32,7 +32,8 @@ class Transpiler(object):
             warnings.warn('YML file not found: ' + path + '. Skipping')
             return
 
-        # I had a reason for not using with...I don't remember what it was though :)
+        # I had a reason for not using `with`...
+        # I don't remember what it was though :)
         stream = open(path)
         data = load(stream, Loader=Loader)
         stream.close()
