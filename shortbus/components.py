@@ -67,6 +67,8 @@ class VariableDefinition(object):
 
 class TemplateDefinition(object):
     variable_prefix: str = 'VAR{}'
+    name_prefix: str = ''
+
     VARIABLE_WRAPPER: str = '${}$'
     VARIABLE_REGEX = r'(?P<raw>\$(?P<variable>[\w_\.]*)?:?' \
                      r'(?P<default>[^\$]*)?\$)'
@@ -85,7 +87,7 @@ class TemplateDefinition(object):
                  toReformat: bool = True,
                  toShortenFQNames: bool = True):
 
-        self.name = name
+        self.name = self.name_prefix + name
         self.value = value
         self.shortcut = shortcut
         self.description = description
