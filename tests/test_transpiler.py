@@ -170,7 +170,7 @@ class GeneratorTest(TestCase):
             default_name = CONTEXT.cpp.all
 
         class CppTemplate(TemplateDefinition):
-            default_context_cls = CppContext
+            default_context = [CppContext()]
 
         class CppTranspiler(Transpiler):
             template_cls = CppTemplate
@@ -181,4 +181,3 @@ class GeneratorTest(TestCase):
         transpiler.import_from_yml(path)
         result = transpiler.templates['bah'].context_options[0]
         self.assertEqual(result.name, 'cpp')
-

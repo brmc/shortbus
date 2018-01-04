@@ -6,7 +6,7 @@ from collections import OrderedDict, Callable
 from functools import wraps
 from xml import etree
 
-from shortbus.constants import CONTEXT
+from .constants import CONTEXT
 
 
 def warn_if_missing_templates(func):
@@ -72,7 +72,7 @@ class TemplateDefinition(object):
     SUBLIME_CONTENT_REGEX = r'\<\!\[CDATA\[(.*)\]\]'
     SUBLIME_VARIABLE_REGEX = r'(?P<raw>\$\{?(?P<variable>\d):?' \
                              r'(?P<default>[\w_\s]*)\}?)'
-    default_context_cls = ContextDefinition
+    default_context = [ContextDefinition()]
 
     def __init__(
             self,
@@ -94,7 +94,7 @@ class TemplateDefinition(object):
         self.toShortenFQNames = toShortenFQNames
 
         self.variables = variables or {}
-        self.context_options = context_options or [self.default_context_cls()]
+        self.context_options = context_options or self.default_context
 
     def __eq__(self, other):
         equals = [
@@ -169,8 +169,8 @@ class TemplateDefinition(object):
             except FileNotFoundError as _:
                 raise FileNotFoundError(f'Aint no file. get out: {path}')
 
-        context = yml.pop('context', [{}])
-        context_options = [cls.default_context_cls(**x) for x in context]
+        context = yml.pop('context', [])
+        context_options = [ContextDefinition(**x) for x in context]
 
         value, variables = parse_and_extract_variables(
             value, TemplateDefinition.VARIABLE_REGEX)
@@ -186,7 +186,7 @@ class TemplateDefinition(object):
 
             variables[variable_name] = VariableDefinition(**variable)
 
-        return TemplateDefinition(
+        return cls(
             name=name,
             value=value,
             context_options=context_options,
@@ -223,9 +223,9 @@ class TemplateDefinition(object):
             value = boolean_converter[value]
 
             options.append(
-                cls.default_context_cls(name=option_name, value=value))
+                ContextDefinition(name=option_name, value=value))
 
-        return TemplateDefinition(
+        return cls(
             name,
             value=attrs['value'],
             toReformat=toReformat,
@@ -243,11 +243,11 @@ class TemplateDefinition(object):
             content, TemplateDefinition.SUBLIME_VARIABLE_REGEX)
 
         scope = xml.findtext('scope')
-        context = cls.default_context_cls(scope.split('.')[-1].capitalize())
+        context = ContextDefinition(scope.split('.')[-1].capitalize())
 
         description = xml.findtext('description')
 
-        return TemplateDefinition(
+        return cls(
             name=name,
             value=value,
             description=description,

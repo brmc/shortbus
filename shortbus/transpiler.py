@@ -4,13 +4,10 @@ import glob
 import os
 import warnings
 
-try:
-    from lxml import etree as ElementTree
-except:
-    pass
+from lxml import etree as ElementTree
 from yaml import load, dump
 
-from shortbus.components import warn_if_missing_templates, TemplateDefinition
+from .components import warn_if_missing_templates, TemplateDefinition
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -35,6 +32,7 @@ class Transpiler(object):
             warnings.warn('YML file not found: ' + path + '. Skipping')
             return
 
+        # I had a reason for not using with...I don't remember what it was though :)
         stream = open(path)
         data = load(stream, Loader=Loader)
         stream.close()
