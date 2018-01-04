@@ -4,6 +4,7 @@ import re
 import warnings
 from collections import OrderedDict, Callable
 from functools import wraps
+from typing import Tuple, List
 from xml import etree
 
 from .constants import CONTEXT
@@ -74,16 +75,15 @@ class TemplateDefinition(object):
                              r'(?P<default>[\w_\s]*)\}?)'
     default_context = [ContextDefinition()]
 
-    def __init__(
-            self,
-            name,
-            value='',
-            variables=None,
-            context_options=None,
-            shortcut='TAB',
-            description='',
-            toReformat=True,
-            toShortenFQNames=True):
+    def __init__(self,
+                 name: str,
+                 value: str = '',
+                 variables: {} = None,
+                 context_options: List[ContextDefinition] = None,
+                 shortcut: str = 'TAB',
+                 description: str = '',
+                 toReformat: bool = True,
+                 toShortenFQNames: bool = True):
 
         self.name = name
         self.value = value
@@ -255,7 +255,9 @@ class TemplateDefinition(object):
             context_options=[context])
 
 
-def parse_and_extract_variables(string: str, regex: str, variables=None):
+def parse_and_extract_variables(string: str,
+                                regex: str,
+                                variables=None) -> Tuple[str, OrderedDict]:
     pattern: re._pattern_type = re.compile(regex)
     string: str = string.replace("$:$", "$$")
 
