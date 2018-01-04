@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.1 (2018-1-4)
+
+* Bugfix: Custom template definitions were not properly respecting context definitions
+
 0.2.0 (2017-12-6)
 ------------------
 
